@@ -1,21 +1,58 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { useCart } from "../context/CartContext";
-import { Trash2, MapPin, ShoppingBag } from "lucide-react";
+import { Trash2, MapPin, ShoppingBag, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function CartPage() {
   const { cart, total, removeFromCart, clearCart } = useCart();
   const [address, setAddress] = useState("");
+  const [loading, setLoading] = useState(true); // Page loading state
+  const [placingOrder, setPlacingOrder] = useState(false); // Checkout loading
+
+  // Simulate cart data loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500); // Small delay to mimic fetch/loading
+    return () => clearTimeout(timer);
+  }, []);
 
   const checkout = async () => {
-    await fetch("/api/orders", {
-      method: "POST",
-      body: JSON.stringify({ cart, address, payment: "COD" }),
-    });
-    alert("Order placed!");
-    clearCart();
+    if (!address.trim()) {
+      toast.error("Please enter your delivery address.");
+      return;
+    }
+
+    try {
+      setPlacingOrder(true);
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        body: JSON.stringify({ cart, address, payment: "COD" }),
+      });
+
+      if (!res.ok) throw new Error("Order failed");
+
+      toast.success("Order placed successfully!");
+      clearCart();
+      setAddress("");
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setPlacingOrder(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <Loader2 className="animate-spin text-orange-500" size={40} />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -26,7 +63,7 @@ export default function CartPage() {
 
         {cart.length === 0 ? (
           <p className="text-gray-500 text-lg text-center mt-10">
-            🛒 Your cart is empty.  
+            🛒 Your cart is empty.
             <span className="block mt-2">Add some fresh veggies!</span>
           </p>
         ) : (
@@ -96,9 +133,14 @@ export default function CartPage() {
 
               <button
                 onClick={checkout}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg font-semibold transition"
+                disabled={placingOrder}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg font-semibold transition flex items-center justify-center"
               >
-                Place Order (COD)
+                {placingOrder ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  "Place Order (COD)"
+                )}
               </button>
             </div>
           </div>
