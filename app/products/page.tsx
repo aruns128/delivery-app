@@ -1,23 +1,28 @@
-// app/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import ProductCard from "../components/ProductCard";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 export default function HomePage() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
 
   useEffect(() => {
+    setLoading(true);
     fetch("/api/products")
       .then((res) => res.json())
-      .then(setProducts);
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const filteredProducts = products.filter((p: any) =>
+  const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -37,10 +42,14 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Products */}
-      {filteredProducts.length > 0 ? (
+      {/* Loader */}
+      {loading ? (
+        <div className="flex justify-center items-center min-h-[300px]">
+          <Loader2 className="animate-spin text-orange-500" size={40} />
+        </div>
+      ) : filteredProducts.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 pr-[10px]">
-          {filteredProducts.map((p: any) => (
+          {filteredProducts.map((p) => (
             <ProductCard key={p._id} product={p} addToCart={addToCart} />
           ))}
         </div>
