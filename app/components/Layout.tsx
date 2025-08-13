@@ -55,13 +55,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ${isOpen ? "items-start p-5" : "items-center p-2"}`}
         >
           <a
-            href="/"
+            href="/products"
             className={`flex items-center w-full rounded-lg transition px-3 py-2
               ${isOpen ? "gap-2" : "justify-center"}
-              ${pathname === "/" ? "bg-orange-500 text-white shadow" : "hover:text-orange-600"}`}
+              ${pathname === "/products" ? "bg-orange-500 text-white shadow" : "hover:text-orange-600"}`}
           >
             <Home size={22} />
-            {!isMobile && isOpen && <span>Home</span>}
+            {!isMobile && isOpen && <span>Products</span>}
           </a>
 
           <a

@@ -1,52 +1,63 @@
-// app/page.tsx
+// pages/index.tsx
 "use client";
-import { useEffect, useState } from "react";
-import Layout from "./components/Layout";
-import ProductCard from "./components/ProductCard";
-import { Search } from "lucide-react";
-import { useCart } from "./context/CartContext";
+import Link from "next/link";
 
-export default function HomePage() {
-  const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const { addToCart } = useCart();
-
-  useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then(setProducts);
-  }, []);
-
-  const filteredProducts = products.filter((p: any) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+export default function LandingPage() {
   return (
-    <Layout>
-      {/* Search */}
-      <div className="mb-6">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search vegetables..."
-            className="pl-10 pr-4 py-2 w-full rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-orange-300 text-gray-800"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+    <main className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 flex flex-col items-center justify-center text-center p-6">
+      {/* Hero Section */}
+      <h1 className="text-5xl font-extrabold text-orange-800 animate-fadeInUp">
+        Welcome to <span className="text-orange-600">Farm Fresh</span>
+      </h1>
+      <p className="mt-6 text-lg text-gray-700 max-w-xl animate-fadeInUp delay-200">
+        Bringing you nature’s best — freshly harvested fruits, vegetables, and grains,
+        sourced directly from local farmers. Experience the taste of purity,
+        with zero chemicals and 100% love.
+      </p>
+      <p className="mt-2 text-sm text-gray-500 animate-fadeInUp delay-300">
+        Trusted by hundreds of happy families for daily nutrition and wellness.
+      </p>
+
+      {/* CTA Button */}
+      <div className="mt-10 flex gap-4 animate-fadeInUp delay-400">
+        <Link
+          href="/products"
+          className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-lg hover:bg-orange-700 transform hover:scale-105 transition-all duration-300"
+        >
+          Start Shopping
+        </Link>
       </div>
 
-      {/* Products */}
-      {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 pr-[10px]">
-          {filteredProducts.map((p: any) => (
-            <ProductCard key={p._id} product={p} addToCart={addToCart} />
-          ))}
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-8">No products found.</p>
-      )}
-    </Layout>
+     
+
+      {/* Simple Tailwind Animations */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease forwards;
+        }
+        .delay-200 {
+          animation-delay: 0.2s;
+        }
+        .delay-300 {
+          animation-delay: 0.3s;
+        }
+        .delay-400 {
+          animation-delay: 0.4s;
+        }
+        .delay-500 {
+          animation-delay: 0.5s;
+        }
+      `}</style>
+    </main>
   );
 }
