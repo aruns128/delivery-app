@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Top Bar */}
         <header className="bg-gradient-to-r from-red-100 via-orange-100 to-red-50 shadow-sm px-4 sm:px-6 py-3 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl font-bold text-orange-800">
-            Fresh Vegetables Daily
+            Department Store
           </h1>
 
           {/* Cart Button */}
