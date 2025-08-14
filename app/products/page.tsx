@@ -48,7 +48,7 @@ export default function HomePage() {
           <Loader2 className="animate-spin text-orange-500" size={40} />
         </div>
       ) : filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 pr-[10px]">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pr-[10px]">
           {filteredProducts.map((p) => (
             <ProductCard key={p._id} product={p} addToCart={addToCart} />
           ))}
