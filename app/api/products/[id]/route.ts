@@ -2,13 +2,15 @@ import { connectDB } from "../../db";
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+// PATCH product by ID
+export async function PATCH(req: Request, context: { params: any }) {
   try {
+    const { id } = await context.params; // ✅ await params
     const db = await connectDB();
     const body = await req.json();
 
     const result = await db.collection("products").updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: body }
     );
 
@@ -22,10 +24,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+
+// DELETE product by ID
+export async function DELETE(req: Request, context: { params: any }) {
   try {
+    const { id } = await context.params; // ✅ await params
     const db = await connectDB();
-    const result = await db.collection("products").deleteOne({ _id: new ObjectId(params.id) });
+    const result = await db.collection("products").deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return NextResponse.json({ message: "Product not found" }, { status: 404 });
