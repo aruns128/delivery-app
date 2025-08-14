@@ -25,7 +25,11 @@ export default function ProductCard({ product, addToCart }: any) {
       {/* Product Image */}
       <div className="relative">
         <img
-          src={product.image || "/tomoto.jpg"}
+         src={
+              product.image
+                ? `data:image/jpeg;base64,${product.image}`
+                : "/tomoto.jpg"
+            }
           alt={product.name}
           className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 hover:scale-105"
         />

@@ -100,8 +100,8 @@ export default function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`pb-2 sm:pb-3 px-3 sm:px-5 flex items-center gap-1 sm:gap-2 font-medium transition-all duration-300 text-sm sm:text-base ${activeTab === tab.id
-                  ? "border-b-2 border-green-600 text-green-600"
-                  : "text-gray-500 hover:text-green-500"
+                ? "border-b-2 border-green-600 text-green-600"
+                : "text-gray-500 hover:text-green-500"
                 }`}
             >
               {tab.icon} {tab.label}
@@ -130,84 +130,82 @@ export default function AdminPage() {
                     <Plus size={18} /> Add Product
                   </button>
                 </div>
-              <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
-                {products.length === 0 ? (
-                  <p className="p-6 text-gray-500 text-center">No products available</p>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                      <thead className="bg-gradient-to-r from-green-50 to-green-100 sticky top-0 z-10">
-                        <tr>
-                          <th className="p-4 font-semibold text-gray-700">Image</th>
-                          <th className="p-4 font-semibold text-gray-700">Name</th>
-                          <th className="p-4 font-semibold text-gray-700 text-center">Price</th>
-                          <th className="p-4 font-semibold text-gray-700 text-center">Stock</th>
-                          <th className="p-4 font-semibold text-gray-700 text-center">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products.map((product: any, idx: number) => (
-                          <tr
-                            key={product._id}
-                            className={`transition-colors ${
-                              idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                            } hover:bg-green-50`}
-                          >
-                            <td className="p-4">
-                              <img
-                                src={
-                                  product.image
-                                    ? `data:image/jpeg;base64,${product.image}`
-                                    : "/tomoto.jpg"
-                                }
-                                alt={product.name}
-                                className="w-14 h-14 object-cover rounded-lg shadow-sm border border-gray-200"
-                              />
-                            </td>
-                            <td className="p-4 font-medium text-gray-800">{product.name}</td>
-                            <td className="p-4 font-semibold text-gray-900 text-center">
-                              ₹{product.price}
-                            </td>
-                            <td className="p-4 text-center">
-                              {product.inStock ? (
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                                  In Stock
-                                </span>
-                              ) : (
-                                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                                  Out of Stock
-                                </span>
-                              )}
-                            </td>
-                            <td className="p-4 flex items-center justify-center gap-2">
-                              <button
-                                onClick={() =>
-                                  toggleStock(product._id, product.inStock)
-                                }
-                                className="px-3 py-1 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition flex items-center gap-1"
-                                title={
-                                  product.inStock
-                                    ? "Mark as Out of Stock"
-                                    : "Mark as In Stock"
-                                }
-                              >
-                                {product.inStock ? "Set Out" : "Set In"}
-                              </button>
-                              <button
-                                onClick={() => deleteProduct(product._id)}
-                                className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center gap-1"
-                                title="Delete Product"
-                              >
-                                Delete
-                              </button>
-                            </td>
+                <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
+                  {products.length === 0 ? (
+                    <p className="p-6 text-gray-500 text-center">No products available</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[700px] text-sm text-left">
+                        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0 z-10">
+                          <tr>
+                            <th className="p-4 font-semibold text-gray-700">Image</th>
+                            <th className="p-4 font-semibold text-gray-700">Name</th>
+                            <th className="p-4 font-semibold text-gray-700 text-center">Price</th>
+                            <th className="p-4 font-semibold text-gray-700 text-center">Stock</th>
+                            <th className="p-4 font-semibold text-gray-700 text-center">Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
+                        </thead>
+                        <tbody>
+                          {products.map((product: any, idx: number) => (
+                            <tr
+                              key={product._id}
+                              className={`transition-colors ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                } hover:bg-blue-50`}
+                            >
+                              <td className="p-4">
+                                <img
+                                  src={
+                                    product.image
+                                      ? `data:image/jpeg;base64,${product.image}`
+                                      : "/tomoto.jpg"
+                                  }
+                                  alt={product.name}
+                                  className="w-14 h-14 object-cover rounded-lg shadow-sm border border-gray-200"
+                                />
+                              </td>
+                              <td className="p-4 font-medium text-gray-800">{product.name}</td>
+                              <td className="p-4 font-semibold text-gray-900 text-center">
+                                ₹{product.price}
+                              </td>
+                              <td className="p-4 text-center">
+                                {product.inStock ? (
+                                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                                    In Stock
+                                  </span>
+                                ) : (
+                                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                                    Out of Stock
+                                  </span>
+                                )}
+                              </td>
+                              <td className="p-4 flex items-center justify-center gap-2">
+                                <button
+                                  onClick={() => toggleStock(product._id, product.inStock)}
+                                  className="px-3 py-1 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition flex items-center gap-1"
+                                  title={
+                                    product.inStock
+                                      ? "Mark as Out of Stock"
+                                      : "Mark as In Stock"
+                                  }
+                                >
+                                  {product.inStock ? "Set Out" : "Set In"}
+                                </button>
+                                <button
+                                  onClick={() => deleteProduct(product._id)}
+                                  className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center gap-1"
+                                  title="Delete Product"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
 
               </>
             }
