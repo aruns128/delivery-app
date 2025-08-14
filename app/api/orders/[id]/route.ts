@@ -5,9 +5,9 @@ import { ObjectId } from "mongodb";
 // PATCH: Update order by ID
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: any }
 ) {
-  const { id } = params;
+  const { id } = await context.params; // ✅ await params
   const body = await req.json();
   const db = await connectDB();
 
@@ -24,8 +24,8 @@ export async function PATCH(
 }
 
 // DELETE: Delete order by ID
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(req: Request, context: { params: any }) {
+  const { id } = await context.params; // ✅ await params
   const db = await connectDB();
 
   const result = await db.collection("orders").deleteOne({ _id: new ObjectId(id) });
