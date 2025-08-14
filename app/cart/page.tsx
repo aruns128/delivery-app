@@ -45,7 +45,7 @@ export default function CartPage() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-[50vh]">
-          <Loader2 className="animate-spin text-orange-500" size={40} />
+          <Loader2 className="animate-spin text-blue-500" size={40} />
         </div>
       </Layout>
     );
@@ -160,7 +160,7 @@ export default function CartPage() {
               className="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-lg font-semibold transition flex items-center justify-center"
             >
               {placingOrder ? (
-                <Loader2 className="animate-spin" size={20} />
+                <Loader2 className="animate-spin text-blue-500" size={20} />
               ) : (
                 "Place Order (COD)"
               )}

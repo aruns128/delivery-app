@@ -45,7 +45,7 @@ export default function HomePage() {
       {/* Loader */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[300px]">
-          <Loader2 className="animate-spin text-orange-500" size={40} />
+          <Loader2 className="animate-spin text-blue-500" size={40} />
         </div>
       ) : filteredProducts.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pr-[10px]">
