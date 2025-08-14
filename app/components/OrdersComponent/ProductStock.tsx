@@ -2,9 +2,9 @@ import React from 'react'
 
 
 interface ProductStockProps {
-  products: any[];
-  toggleStock: (id: any, stock: any) => void;
-  deleteProduct: (id: any) => void;
+    products: any[];
+    toggleStock: (id: any, stock: any) => void;
+    deleteProduct: (id: any) => void;
 }
 
 
@@ -17,7 +17,7 @@ const ProductStock: React.FC<ProductStockProps> = ({ products, toggleStock, dele
                 ) : (
                     <div className="bg-white border-gray-100 max-h-[400px] overflow-y-auto border  ">
                         <table className="w-full min-w-[700px] text-sm text-left border-collapse">
-                        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0 z-10">
+                            <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0 z-10">
                                 <tr>
                                     <th className="p-4 font-semibold text-gray-700">Image</th>
                                     <th className="p-4 font-semibold text-gray-700">Name</th>
@@ -52,19 +52,23 @@ const ProductStock: React.FC<ProductStockProps> = ({ products, toggleStock, dele
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="p-4 flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={() => toggleStock(product._id, product.inStock)}
-                                                className="px-3 py-1 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition text-xs"
-                                            >
-                                                {product.inStock ? "Set Out" : "Set In"}
-                                            </button>
-                                            <button
-                                                onClick={() => deleteProduct(product._id)}
-                                                className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition text-xs"
-                                            >
-                                                Delete
-                                            </button>
+                                        <td className="p-4">
+                                            <div className='flex items-center justify-center gap-2'>
+
+
+                                                <button
+                                                    onClick={() => toggleStock(product._id, product.inStock)}
+                                                    className="px-3 py-1 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition text-xs"
+                                                >
+                                                    {product.inStock ? "Set Out" : "Set In"}
+                                                </button>
+                                                <button
+                                                    onClick={() => deleteProduct(product._id)}
+                                                    className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition text-xs"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
