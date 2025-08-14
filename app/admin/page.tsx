@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import { Package, ClipboardList, Users, Plus, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import ProductStock from "../components/OrdersComponent/ProductStock";
+import OrdersManagement from "../components/OrdersComponent/OrdersManagement";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("stock");
@@ -11,37 +13,52 @@ export default function AdminPage() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [loadingOrders, setLoadingOrders] = useState(false);
 
+  // Fetch products
   const fetchProducts = async () => {
-    setLoading(true);
+    setLoadingProducts(true);
     const res = await fetch("/api/products");
     const data = await res.json();
-    setLoading(false);
+    setLoadingProducts(false);
     setProducts(data);
   };
 
+  // Fetch orders
+  const fetchOrders = async () => {
+    setLoadingOrders(true);
+    const res = await fetch("/api/orders");
+    const data = await res.json();
+    setLoadingOrders(false);
+    setOrders(data);
+  };
+
+  // Fetch data based on active tab
   useEffect(() => {
     if (activeTab === "stock") {
       fetchProducts();
+    } else if (activeTab === "orders") {
+      fetchOrders();
     }
   }, [activeTab]);
 
-
+  // Add product
   const addProduct = async () => {
-    setLoading(true);
     if (!name || !price || !description || !image) {
       toast.error("Please fill in all fields and select an image");
       return;
     }
 
+    setLoadingProducts(true);
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price", price);
     formData.append("description", description);
     formData.append("image", image);
-    formData.append("inStock", "true"); // ✅ Default stock status
+    formData.append("inStock", "true");
 
     try {
       const res = await fetch("/api/products", {
@@ -49,7 +66,6 @@ export default function AdminPage() {
         body: formData,
       });
 
-      setLoading(false);
       if (!res.ok) throw new Error("Failed to add product");
 
       toast.success("Product added successfully");
@@ -60,29 +76,49 @@ export default function AdminPage() {
       setShowModal(false);
       fetchProducts();
     } catch (error) {
-      setLoading(false);
       console.error(error);
       toast.error("Error adding product");
+    } finally {
+      setLoadingProducts(false);
     }
   };
 
+  // Delete product
   const deleteProduct = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
-    setLoading(true);
+    setLoadingProducts(true);
     await fetch(`/api/products/${id}`, { method: "DELETE" });
-    setLoading(false);
+    setLoadingProducts(false);
     fetchProducts();
   };
 
+  // Toggle stock status
   const toggleStock = async (id: string, currentStatus: boolean) => {
-    setLoading(true);
+    setLoadingProducts(true);
     await fetch(`/api/products/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ inStock: !currentStatus }),
     });
-    setLoading(false);
+    setLoadingProducts(false);
     fetchProducts();
+  };
+
+  // Update order status
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    await fetch(`/api/orders/${orderId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    fetchOrders();
+  };
+
+  // Cancel order
+  const cancelOrder = async (orderId: string) => {
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+    await fetch(`/api/orders/${orderId}`, { method: "DELETE" });
+    fetchOrders();
   };
 
   return (
@@ -100,8 +136,8 @@ export default function AdminPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`pb-2 sm:pb-3 px-3 sm:px-5 flex items-center gap-1 sm:gap-2 font-medium transition-all duration-300 text-sm sm:text-base ${activeTab === tab.id
-                ? "border-b-2 border-green-600 text-green-600"
-                : "text-gray-500 hover:text-green-500"
+                ? "border-b-2 border-blue-600 text-blue-600"
+                : "text-gray-500 hover:text-blue-500"
                 }`}
             >
               {tab.icon} {tab.label}
@@ -109,117 +145,58 @@ export default function AdminPage() {
           ))}
         </div>
 
-
-        {/* Tab Content */}
+        {/* Stock Tab */}
         {activeTab === "stock" && (
-
-          <>
-            {loading ?
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full">
+            {loadingProducts ? (
               <div className="flex justify-center items-center min-h-[300px]">
-                <Loader2 className="animate-spin text-orange-500" size={40} />
-              </div> :
+                <Loader2 className="animate-spin text-blue-500" size={40} />
+              </div>
+            ) : (
               <>
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-                    Product Stock Management
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                    Stocks
                   </h2>
                   <button
                     onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition"
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
                   >
                     <Plus size={18} /> Add Product
                   </button>
                 </div>
                 <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
-                  {products.length === 0 ? (
-                    <p className="p-6 text-gray-500 text-center">No products available</p>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[700px] text-sm text-left">
-                        <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0 z-10">
-                          <tr>
-                            <th className="p-4 font-semibold text-gray-700">Image</th>
-                            <th className="p-4 font-semibold text-gray-700">Name</th>
-                            <th className="p-4 font-semibold text-gray-700 text-center">Price</th>
-                            <th className="p-4 font-semibold text-gray-700 text-center">Stock</th>
-                            <th className="p-4 font-semibold text-gray-700 text-center">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {products.map((product: any, idx: number) => (
-                            <tr
-                              key={product._id}
-                              className={`transition-colors ${idx % 2 === 0 ? "bg-white" : "bg-gray-50"
-                                } hover:bg-blue-50`}
-                            >
-                              <td className="p-4">
-                                <img
-                                  src={
-                                    product.image
-                                      ? `data:image/jpeg;base64,${product.image}`
-                                      : "/tomoto.jpg"
-                                  }
-                                  alt={product.name}
-                                  className="w-14 h-14 object-cover rounded-lg shadow-sm border border-gray-200"
-                                />
-                              </td>
-                              <td className="p-4 font-medium text-gray-800">{product.name}</td>
-                              <td className="p-4 font-semibold text-gray-900 text-center">
-                                ₹{product.price}
-                              </td>
-                              <td className="p-4 text-center">
-                                {product.inStock ? (
-                                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                                    In Stock
-                                  </span>
-                                ) : (
-                                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                                    Out of Stock
-                                  </span>
-                                )}
-                              </td>
-                              <td className="p-4 flex items-center justify-center gap-2">
-                                <button
-                                  onClick={() => toggleStock(product._id, product.inStock)}
-                                  className="px-3 py-1 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 transition flex items-center gap-1"
-                                  title={
-                                    product.inStock
-                                      ? "Mark as Out of Stock"
-                                      : "Mark as In Stock"
-                                  }
-                                >
-                                  {product.inStock ? "Set Out" : "Set In"}
-                                </button>
-                                <button
-                                  onClick={() => deleteProduct(product._id)}
-                                  className="px-3 py-1 rounded-lg bg-red-600 text-white hover:bg-red-700 transition flex items-center gap-1"
-                                  title="Delete Product"
-                                >
-                                  Delete
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                  <ProductStock
+                    products={products}
+                    toggleStock={toggleStock}
+                    deleteProduct={deleteProduct}
+                  />
                 </div>
-
-
               </>
-            }
-          </>
-
-        )}
-
-        {activeTab === "orders" && (
-          <div className="bg-white shadow p-6 rounded-xl">
-            <h2 className="text-2xl font-bold mb-4">Orders</h2>
-            <p className="text-gray-500">Order management UI coming soon...</p>
+            )}
           </div>
         )}
 
+        {/* Orders Tab */}
+        {activeTab === "orders" && (
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full">
+            <h2 className="text-2xl font-bold mb-4 text-blue-800">Orders</h2>
+
+            {loadingOrders ? (
+              <div className="flex justify-center items-center min-h-[200px]">
+                <Loader2 className="animate-spin text-blue-500" size={30} />
+              </div>
+            ) : (
+              <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
+                <OrdersManagement
+                  orders={orders}
+                  updateOrderStatus={updateOrderStatus}
+                  cancelOrder={cancelOrder}
+                /></div>)}
+          </div>
+        )}
+
+        {/* Users Tab */}
         {activeTab === "users" && (
           <div className="bg-white shadow p-6 rounded-xl">
             <h2 className="text-2xl font-bold mb-4">Users</h2>
@@ -253,9 +230,7 @@ export default function AdminPage() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) =>
-                  setImage(e.target.files ? e.target.files[0] : null)
-                }
+                onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
                 className="border p-2 block my-2 w-full rounded-lg"
               />
               <div className="flex justify-end gap-3 mt-4">
@@ -267,7 +242,7 @@ export default function AdminPage() {
                 </button>
                 <button
                   onClick={addProduct}
-                  className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
                 >
                   Add Product
                 </button>

@@ -10,8 +10,7 @@ export default function LandingPage() {
         Welcome to <span className="text-blue-600">DailyMart</span>
       </h1>
       <p className="mt-6 text-lg text-gray-700 max-w-xl animate-fadeInUp delay-200">
-        Your one-stop departmental store for groceries, home essentials, snacks, beverages, 
-        and much more. Everything you need under one roof — delivered with convenience and care.
+        Your one-stop departmental store for groceries and much more. Everything you need under one roof — delivered with convenience and care.
       </p>
       <p className="mt-2 text-sm text-gray-500 animate-fadeInUp delay-300">
         Serving thousands of families daily with quality products and unbeatable prices.

@@ -5,6 +5,7 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
+  User2,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
@@ -60,7 +61,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             href="/products"
             className={`flex items-center w-full rounded-lg transition px-3 py-2
               ${isOpen ? "gap-2" : "justify-center"}
-              ${pathname === "/products" ? "bg-blue-200 text-blue-800 shadow" : "hover:text-blue-600"}`}
+              ${pathname === "/products" ? "bg-blue-200 text-blue-800 shadow font-bold" : "hover:text-blue-600"}`}
           >
             <Home size={22} />
             {!isMobile && isOpen && <span>Products</span>}
@@ -70,10 +71,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             href="/cart"
             className={`flex items-center w-full rounded-lg transition px-3 py-2
               ${isOpen ? "gap-2" : "justify-center"}
-              ${pathname === "/cart" ? "bg-blue-200 text-blue-800 shadow" : "hover:text-blue-600"}`}
+              ${pathname === "/cart" ? "bg-blue-200 text-blue-800 shadow font-bold" : "hover:text-blue-600"}`}
           >
             <Package size={22} />
             {!isMobile && isOpen && <span>My Orders</span>}
+          </a>
+            <a
+            href="/admin"
+            className={`flex items-center w-full rounded-lg transition px-3 py-2
+              ${isOpen ? "gap-2" : "justify-center"}
+              ${pathname === "/admin" ? "bg-blue-200 text-blue-800 shadow font-bold" : "hover:text-blue-600"}`}
+          >
+            <User2 size={22} />
+            {!isMobile && isOpen && <span>Admin</span>}
           </a>
         </nav>
       </aside>
