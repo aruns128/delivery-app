@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Hydration-safe
+  // Hydration safe
   useEffect(() => setMounted(true), []);
 
   // Detect screen size
@@ -28,6 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (mobile) setIsOpen(false);
+      else setIsOpen(true);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -37,12 +38,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (!mounted) return null;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <aside
-        className={`relative transition-all duration-300 ease-in-out
+        className={`bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg transition-all duration-300 ease-in-out
           ${isOpen ? "w-64" : "w-16"} 
-          bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg`}
+          ${isMobile ? "fixed top-0 left-0 z-50 h-screen" : "relative h-full"}`}
       >
         {!isMobile && (
           <button
@@ -76,7 +77,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Package size={22} />
             {!isMobile && isOpen && <span>My Orders</span>}
           </a>
-            <a
+
+          <a
             href="/admin"
             className={`flex items-center w-full rounded-lg transition px-3 py-2
               ${isOpen ? "gap-2" : "justify-center"}
@@ -89,7 +91,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 h-full ${isMobile&& "ml-16"}`}
+      >
         <header className="bg-gradient-to-r from-blue-50 to-blue-100 shadow-sm px-4 sm:px-6 py-3 flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl font-bold text-blue-800">
             DailyMart
@@ -107,7 +111,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </a>
         </header>
 
-        <main className="flex-1 p-3 sm:p-5">{children}</main>
+        {/* Scrollable content */}
+        <main className={`flex-1 p-3 sm:p-5 overflow-y-auto`}>{children}</main>
       </div>
     </div>
   );

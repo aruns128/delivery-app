@@ -135,51 +135,65 @@ export default function AdminPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-2 sm:pb-3 px-3 sm:px-5 flex items-center gap-1 sm:gap-2 font-medium transition-all duration-300 text-sm sm:text-base ${activeTab === tab.id
-                ? "border-b-2 border-blue-600 text-blue-600"
-                : "text-gray-500 hover:text-blue-500"
-                }`}
+              className={`relative pb-2 sm:pb-3 px-3 sm:px-5 flex items-center gap-1 sm:gap-2 font-medium transition-all duration-300 text-sm sm:text-base ${
+                activeTab === tab.id
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-gray-500 hover:text-blue-500"
+              }`}
             >
-              {tab.icon} {tab.label}
+              {/* Icon only on mobile, icon + label on sm+ */}
+              <span className="sm:hidden group">
+                {tab.icon}
+                <span className="absolute left-1/2 -translate-x-1/2 mt-2 z-10 whitespace-nowrap bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+                  {tab.label}
+                </span>
+              </span>
+              <span className="hidden sm:flex items-center gap-2">
+                {tab.icon} {tab.label}
+              </span>
             </button>
           ))}
         </div>
 
         {/* Stock Tab */}
-        {activeTab === "stock" && (
-          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full">
-            {loadingProducts ? (
-              <div className="flex justify-center items-center min-h-[300px]">
-                <Loader2 className="animate-spin text-blue-500" size={40} />
+       {activeTab === "stock" && (
+        <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full overflow-x-auto max-w-[80vw]">
+          {loadingProducts ? (
+            <div className="flex justify-center items-center min-h-[300px]">
+              <Loader2 className="animate-spin text-blue-500" size={40} />
+            </div>
+          ) : (
+            <div className="min-w-96 flex flex-col">
+              {/* Header + Add button */}
+              <div className="flex justify-between items-center mb-4 flex-shrink-0">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                  Stocks
+                </h2>
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+                >
+                  <Plus size={18} /> Add Product
+                </button>
               </div>
-            ) : (
-              <>
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                    Stocks
-                  </h2>
-                  <button
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition"
-                  >
-                    <Plus size={18} /> Add Product
-                  </button>
-                </div>
-                <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
-                  <ProductStock
-                    products={products}
-                    toggleStock={toggleStock}
-                    deleteProduct={deleteProduct}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        )}
+
+              {/* ProductStock scrollable area */}
+              <div className="flex-1 bg-white shadow-lg rounded-xl border border-gray-100">
+                <ProductStock
+                  products={products}
+                  toggleStock={toggleStock}
+                  deleteProduct={deleteProduct}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
 
         {/* Orders Tab */}
         {activeTab === "orders" && (
-          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full">
+          <div className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full overflow-x-auto max-w-[80vw]">
             <h2 className="text-2xl font-bold mb-4 text-blue-800">Orders</h2>
 
             {loadingOrders ? (

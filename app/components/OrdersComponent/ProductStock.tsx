@@ -10,12 +10,12 @@ interface ProductStockProps {
 
 const ProductStock: React.FC<ProductStockProps> = ({ products, toggleStock, deleteProduct }) => {
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full ">
             <div className="bg-white rounded-xl overflow-hidden border border-gray-100">
                 {products.length === 0 ? (
                     <p className="p-6 text-gray-500 text-center">No products available</p>
                 ) : (
-                    <div className="bg-white border-gray-100 max-h-[400px] overflow-y-auto border  overflow-x-auto">
+                    <div className="bg-white border-gray-100 max-h-[400px] overflow-y-auto border  ">
                         <table className="w-full min-w-[700px] text-sm text-left border-collapse">
                         <thead className="bg-gradient-to-r from-blue-50 to-blue-100 sticky top-0 z-10">
                                 <tr>
