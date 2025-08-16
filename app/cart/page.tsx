@@ -41,6 +41,40 @@ export default function CartPage() {
     }
   };
 
+  const payOnline = async () => {
+    if (!address.trim()) {
+      toast.error("Please enter your delivery address.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/payment/order", {
+        method: "POST",
+        body: JSON.stringify({ amount: total }),
+      });
+      const order = await res.json();
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+        name: "Veggie Shop",
+        description: "Order Payment",
+        handler: function (response: any) {
+          toast.success("Payment successful!");
+          clearCart();
+        },
+        theme: { color: "#F97316" },
+      };
+
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      toast.error("Payment failed. Try again.");
+    }
+  };
+
+
   if (loading) {
     return (
       <Layout>
@@ -142,7 +176,7 @@ export default function CartPage() {
             {/* Address */}
             <div className="mb-4">
               <label className="flex items-center gap-2 font-semibold text-gray-700 mb-2">
-                <MapPin size={18} /> Delivery Address
+                <MapPin size={18} />Name, Phone Number, Delivery Address
               </label>
               <textarea
                 placeholder="Enter your delivery address..."
@@ -165,6 +199,14 @@ export default function CartPage() {
                 "Place Order (COD)"
               )}
             </button>
+
+            <button
+              onClick={payOnline}
+              className="w-full mt-2 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition"
+            >
+              Pay Online (UPI/QR)
+            </button>
+
           </div>
         </div>
       )}
